@@ -1,3 +1,3 @@
 # Cocktail Swap
 
-Pancake swap trade analysis and copy trading
+Binance Smart Chain swap analysis and copy swap
