@@ -24,13 +24,14 @@ let subscription = web3.eth.subscribe('logs', {
     for (const log of tx.logs) {
       if (log.topics[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
         // transfer log
-        let contract = new Contract(require('./erc20.json'), log.address);
         let tokenInfo = tokenInfoMap[log.address];
         if (tokenInfo === undefined) {
+          let contract = new Contract(require('./erc20.json'), log.address);
           let name = await contract.methods.name().call();
           let decimal = await contract.methods.decimals().call();
-          tokenInfo = {name, decimal}
-          tokenInfoMap[log.address] = tokenInfo
+          let symbol = await contract.methods.symbol().call();
+          tokenInfo = {symbol, name, decimal};
+          tokenInfoMap[log.address] = tokenInfo;
         }
         let amount = (web3.eth.abi.decodeParameters(['uint256'], log.data))[0] / Math.pow(10, tokenInfo.decimal);
         if (log.topics[2].substr(26) === tx.from.substr(2) ||
@@ -39,6 +40,7 @@ let subscription = web3.eth.subscribe('logs', {
           // transfer from swapper or transfer native from wrapper router.
           swap.tokenIn = log.address;
           swap.tokenInName = tokenInfo.name;
+          swap.tokenInSymbol = tokenInfo.symbol;
           swap.amountIn = amount;
         } else if (log.topics[1].substr(26) === tx.from.substr(2) ||
           (log.topics[1].substr(26) === tx.to.substr(2) &&
@@ -46,6 +48,7 @@ let subscription = web3.eth.subscribe('logs', {
           // transfer from swapper or transfer native from wrapper router.
           swap.tokenOut = log.address;
           swap.tokenOutName = tokenInfo.name;
+          swap.tokenOutSymbol = tokenInfo.symbol;
           swap.amountOut = amount;
         }
       }
