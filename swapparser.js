@@ -15,7 +15,6 @@ const swapparser = {};
 swapparser.parseSwapTx = async function parseSwapTx(tx) {
   let randomApiKey = GetBlockAPIKeys[Math.floor(Math.random() * GetBlockAPIKeys.length)];
   let nodeURL = `https://bsc.getblock.io/mainnet/?api_key=${randomApiKey}`;
-  console.log(nodeURL);
   Contract.setProvider(nodeURL);
   let web3 = new Web3(nodeURL);
   let timestamp = blockTime[tx.blockNumber];
