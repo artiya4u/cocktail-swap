@@ -586,4 +586,122 @@ describe('Parse swap transactions', function () {
     let swap = await SwapParser.parseSwapTx(tx);
     swap.should.deep.eq(expected);
   });
+
+  it('swap usdt-alt', async function () {
+    let tx = {
+      "blockHash": "0x82e31417f2721f02c36aca5a5b531920ac8121866a929e518bf170c6b61fbc7b",
+      "blockNumber": 8972139,
+      "contractAddress": null,
+      "cumulativeGasUsed": 3720229,
+      "from": "0xe626383bb631a69ca897dafff63dcee1d40e5917",
+      "gasUsed": 176729,
+      "logs": [
+        {
+          "address": "0x55d398326f99059fF775485246999027B3197955",
+          "topics": [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            "0x000000000000000000000000e626383bb631a69ca897dafff63dcee1d40e5917",
+            "0x000000000000000000000000bf7cd39d07adaa953e1e0be47f97315955c9381b"
+          ],
+          "data": "0x000000000000000000000000000000000000000000000002b5e3af16b1880000",
+          "blockNumber": 8972139,
+          "transactionHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+          "transactionIndex": 18,
+          "blockHash": "0x82e31417f2721f02c36aca5a5b531920ac8121866a929e518bf170c6b61fbc7b",
+          "logIndex": 104,
+          "removed": false,
+          "id": "log_a86d4da4"
+        },
+        {
+          "address": "0x55d398326f99059fF775485246999027B3197955",
+          "topics": [
+            "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
+            "0x000000000000000000000000e626383bb631a69ca897dafff63dcee1d40e5917",
+            "0x00000000000000000000000010ed43c718714eb63d5aa57b78b54704e256024e"
+          ],
+          "data": "0xfffffffffffffffffffffffffffffffffffffffffffffffd3c3b9a35a713ffff",
+          "blockNumber": 8972139,
+          "transactionHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+          "transactionIndex": 18,
+          "blockHash": "0x82e31417f2721f02c36aca5a5b531920ac8121866a929e518bf170c6b61fbc7b",
+          "logIndex": 105,
+          "removed": false,
+          "id": "log_09f5928a"
+        },
+        {
+          "address": "0xc748673057861a797275CD8A068AbB95A902e8de",
+          "topics": [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            "0x000000000000000000000000bf7cd39d07adaa953e1e0be47f97315955c9381b",
+            "0x000000000000000000000000e626383bb631a69ca897dafff63dcee1d40e5917"
+          ],
+          "data": "0x000000000000000000000000000000000000000000000000ee5bd4172e219cb0",
+          "blockNumber": 8972139,
+          "transactionHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+          "transactionIndex": 18,
+          "blockHash": "0x82e31417f2721f02c36aca5a5b531920ac8121866a929e518bf170c6b61fbc7b",
+          "logIndex": 106,
+          "removed": false,
+          "id": "log_a9dded79"
+        },
+        {
+          "address": "0xBF7cd39D07aDAa953E1E0bE47F97315955c9381B",
+          "topics": [
+            "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1"
+          ],
+          "data": "0x000000000000000000000000000000000000000000002efab7706fe73d0faaed0000000000000000000000000000000000000000000011f8d05d667a94c7b1b6",
+          "blockNumber": 8972139,
+          "transactionHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+          "transactionIndex": 18,
+          "blockHash": "0x82e31417f2721f02c36aca5a5b531920ac8121866a929e518bf170c6b61fbc7b",
+          "logIndex": 107,
+          "removed": false,
+          "id": "log_a77e4aae"
+        },
+        {
+          "address": "0xBF7cd39D07aDAa953E1E0bE47F97315955c9381B",
+          "topics": [
+            "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822",
+            "0x00000000000000000000000010ed43c718714eb63d5aa57b78b54704e256024e",
+            "0x000000000000000000000000e626383bb631a69ca897dafff63dcee1d40e5917"
+          ],
+          "data": "0x000000000000000000000000000000000000000000000002b5e3af16b18800000000000000000000000000000000000000000000000000000057d9d32025b76c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000108d7cf363341ca8a",
+          "blockNumber": 8972139,
+          "transactionHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+          "transactionIndex": 18,
+          "blockHash": "0x82e31417f2721f02c36aca5a5b531920ac8121866a929e518bf170c6b61fbc7b",
+          "logIndex": 108,
+          "removed": false,
+          "id": "log_d2186693"
+        }
+      ],
+      "logsBloom": "0x00280200000000000000000080000000000000000000000000000000000001000000000000000000000000000000000000000200000000000000000000200000000000000000000001000008000000200000000000000000000000000000000000000000000000000000000000000000000004000000000000000011000000000020000000000000008000000000000000200000000000080000004008000000020000000000000000000000020000000000000000000000000000000000000001000002000000000000000000000000200000000800001000000000000000000010080000000000020000000000000000000002000000000000000000000000",
+      "status": true,
+      "to": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+      "transactionHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+      "transactionIndex": 18,
+      "type": "0x0"
+    };
+    const expected = {
+      "valueUSD": 50,
+      "swapAt": new Date("2021-07-08T08:49:20.000Z"),
+      "txHash": "0xf3b1fcfd04cfd7d9dd78297bd75ebe0fbe57913390c72982e3ff770d133584a1",
+      "blockNumber": 8972139,
+      "swapper": "0xe626383bb631a69ca897dafff63dcee1d40e5917",
+      "router": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+      "tokenOut": "0x55d398326f99059fF775485246999027B3197955",
+      "tokenOutName": "Tether USD",
+      "tokenOutDecimal": "18",
+      "tokenOutSymbol": "USDT",
+      "amountOut": "50000000000000000000",
+      "tokenIn": "0xc748673057861a797275CD8A068AbB95A902e8de",
+      "tokenInName": "Baby Doge Coin",
+      "tokenInSymbol": "BabyDoge",
+      "tokenInDecimal": "9",
+      "amountIn": "17175554799930809520"
+    };
+
+    let swap = await SwapParser.parseSwapTx(tx);
+    swap.should.deep.eq(expected);
+  });
 });
