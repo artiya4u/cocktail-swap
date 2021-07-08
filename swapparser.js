@@ -55,7 +55,7 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
           swap.tokenInDecimal = tokenInfo.decimal;
           swap.amountIn = amount;
         } else if (swap.tokenIn === log.address) {
-          if (parseInt(amount) > parseInt(swap.tokenIn)) {
+          if (parseInt(amount) > parseInt(swap.amountIn)) {
             swap.amountIn = amount;
           }
         }
@@ -68,8 +68,8 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
           swap.tokenOutSymbol = tokenInfo.symbol;
           swap.amountOut = amount;
         } else if (swap.tokenOut === log.address) {
-          if (parseInt(amount) > parseInt(swap.tokenOut)) {
-            swap.tokenOut = amount;
+          if (parseInt(amount) > parseInt(swap.amountOut)) {
+            swap.amountOut = amount;
           }
         }
       }
