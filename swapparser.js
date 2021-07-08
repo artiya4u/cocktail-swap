@@ -1,6 +1,6 @@
 let Web3 = require('web3');
 let Contract = require('web3-eth-contract');
-const nodeURL = 'https://bsc.getblock.io/mainnet/?api_key=0be84439-05b5-4fc4-b98f-45e23dddd124';
+const nodeURL = 'https://bsc-dataseed.binance.org/';
 Contract.setProvider(nodeURL);
 let web3 = new Web3(nodeURL);
 
@@ -134,6 +134,9 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
     // Arbitrage tx ignored.
     return 0;
   }
+  // if (swap.valueUSD === null) {
+  //   return 0;
+  // }
   return swap;
 };
 
