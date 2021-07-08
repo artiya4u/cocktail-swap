@@ -80,10 +80,10 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
       let priceBNBUSD = reserves._reserve1 / reserves._reserve0;
       if ([swap.tokenOut, swap.tokenIn].includes(wrapBNBAddress)) {
         if (swap.tokenIn === wrapBNBAddress) {
-          swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenOutDecimal) * priceBNBUSD;
+          swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenInDecimal) * priceBNBUSD;
         }
         if (swap.tokenOut === wrapBNBAddress) {
-          swap.valueUSD = swap.amountOut / Math.pow(10, swap.tokenInDecimal) * priceBNBUSD;
+          swap.valueUSD = swap.amountOut / Math.pow(10, swap.tokenOutDecimal) * priceBNBUSD;
         }
       }
       if (swap.valueUSD === null) { // Try TOKEN-USD and TOKEN-BNB
@@ -110,6 +110,7 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
             priceTOKENWBNB = reserves._reserve0 / reserves._reserve1;
           }
           swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENWBNB * priceBNBUSD;
+          console.log(swap);
         }
       }
     } catch (e) {
