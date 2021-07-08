@@ -109,7 +109,7 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
           if (token0.toLowerCase() === wrapBNBAddress.toLowerCase()) {
             priceTOKENWBNB = reserves._reserve0 / reserves._reserve1;
           }
-          swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENWBNB * priceBNBUSD;
+          swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENWBNB * priceBNBUSD / Math.pow(10, 18 - decimal);
           console.log(swap);
         }
       }
