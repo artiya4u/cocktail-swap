@@ -118,6 +118,10 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
       console.log(swap.txHash);
     }
   }
+  if (swap.tokenIn === swap.tokenOut) {
+    // Arbitrage tx ignored.
+    return 0;
+  }
   return swap;
 };
 
