@@ -1,6 +1,6 @@
 let Web3 = require('web3');
 let Contract = require('web3-eth-contract');
-const nodeURL = 'wss://bsc.getblock.io/mainnet/?api_key=0be84439-05b5-4fc4-b98f-45e23dddd124';
+const nodeURL = 'https://bsc.getblock.io/mainnet/?api_key=0be84439-05b5-4fc4-b98f-45e23dddd124';
 Contract.setProvider(nodeURL);
 let web3 = new Web3(nodeURL);
 
@@ -110,7 +110,6 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
             priceTOKENWBNB = reserves._reserve0 / reserves._reserve1;
           }
           swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENWBNB * priceBNBUSD;
-          console.log(swap);
         }
       }
     } catch (e) {
