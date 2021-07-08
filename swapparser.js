@@ -1,8 +1,6 @@
 let Web3 = require('web3');
 let Contract = require('web3-eth-contract');
-const nodeURL = 'https://bsc-dataseed.binance.org/';
-Contract.setProvider(nodeURL);
-let web3 = new Web3(nodeURL);
+const GetBlockAPIKeys = require('./apikeys.json');
 
 const blockTime = {};
 const tokenInfoMap = {};
@@ -15,6 +13,11 @@ const usdTokens = [
 
 const swapparser = {};
 swapparser.parseSwapTx = async function parseSwapTx(tx) {
+  let randomApiKey = GetBlockAPIKeys[Math.floor(Math.random() * GetBlockAPIKeys.length)];
+  let nodeURL = `https://bsc.getblock.io/mainnet/?api_key=${randomApiKey}`;
+  console.log(nodeURL);
+  Contract.setProvider(nodeURL);
+  let web3 = new Web3(nodeURL);
   let timestamp = blockTime[tx.blockNumber];
   if (timestamp === undefined) {
     timestamp = (await web3.eth.getBlock(tx.blockNumber)).timestamp;
