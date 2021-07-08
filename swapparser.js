@@ -67,10 +67,10 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
   if (swap.tokenIn !== undefined && swap.tokenOut !== undefined) {
     // Use USD value
     if (usdTokens.includes(swap.tokenIn)) {
-      swap.valueUSD = swap.amountIn;
+      swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenInDecimal);
     }
     if (usdTokens.includes(swap.tokenOut)) {
-      swap.valueUSD = swap.amountOut;
+      swap.valueUSD = swap.amountOut / Math.pow(10, swap.tokenOutDecimal);
     }
 
     try {

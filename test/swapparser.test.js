@@ -468,4 +468,122 @@ describe('Parse swap transactions', function () {
     let swap = await SwapParser.parseSwapTx(tx);
     swap.should.deep.eq(expected);
   });
+
+  it('swap alt-usdt', async function () {
+    let tx = {
+      "blockHash": "0x6dad41901d08c5dc0ed23dbafc07817a999b4fffc41522288735c3e968db3ba5",
+      "blockNumber": 8971994,
+      "contractAddress": null,
+      "cumulativeGasUsed": 14526449,
+      "from": "0x28e526e9589ebf343ed721424716a4b1a1a13e09",
+      "gasUsed": 111081,
+      "logs": [
+        {
+          "address": "0x084bb94e93891D74579B54Ab63ED24C4ef9cd5Ef",
+          "topics": [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            "0x00000000000000000000000028e526e9589ebf343ed721424716a4b1a1a13e09",
+            "0x00000000000000000000000052560ebc7920617c9b7328186d1f4a136eaf07f4"
+          ],
+          "data": "0x00000000000000000000000000000000000000000000021e19e0c9bab2400000",
+          "blockNumber": 8971994,
+          "transactionHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+          "transactionIndex": 107,
+          "blockHash": "0x6dad41901d08c5dc0ed23dbafc07817a999b4fffc41522288735c3e968db3ba5",
+          "logIndex": 457,
+          "removed": false,
+          "id": "log_0ce8c06a"
+        },
+        {
+          "address": "0x084bb94e93891D74579B54Ab63ED24C4ef9cd5Ef",
+          "topics": [
+            "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
+            "0x00000000000000000000000028e526e9589ebf343ed721424716a4b1a1a13e09",
+            "0x0000000000000000000000000f4610ab02920a99f639f675085a5d3e24b0d7ae"
+          ],
+          "data": "0xffffffffffffffffffffffffffffffffffffffffffff6877ccbb1a8d522324d0",
+          "blockNumber": 8971994,
+          "transactionHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+          "transactionIndex": 107,
+          "blockHash": "0x6dad41901d08c5dc0ed23dbafc07817a999b4fffc41522288735c3e968db3ba5",
+          "logIndex": 458,
+          "removed": false,
+          "id": "log_9f04f9c2"
+        },
+        {
+          "address": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+          "topics": [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            "0x00000000000000000000000052560ebc7920617c9b7328186d1f4a136eaf07f4",
+            "0x00000000000000000000000028e526e9589ebf343ed721424716a4b1a1a13e09"
+          ],
+          "data": "0x000000000000000000000000000000000000000000000030b1ee9165cddaa0c6",
+          "blockNumber": 8971994,
+          "transactionHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+          "transactionIndex": 107,
+          "blockHash": "0x6dad41901d08c5dc0ed23dbafc07817a999b4fffc41522288735c3e968db3ba5",
+          "logIndex": 459,
+          "removed": false,
+          "id": "log_40d561c6"
+        },
+        {
+          "address": "0x52560eBc7920617c9b7328186D1F4A136eAF07F4",
+          "topics": [
+            "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1"
+          ],
+          "data": "0x00000000000000000000000000000000000000000002221091e171c33c15e7590000000000000000000000000000000000000000000030fbbb7f040f856242ac",
+          "blockNumber": 8971994,
+          "transactionHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+          "transactionIndex": 107,
+          "blockHash": "0x6dad41901d08c5dc0ed23dbafc07817a999b4fffc41522288735c3e968db3ba5",
+          "logIndex": 460,
+          "removed": false,
+          "id": "log_0c4c2aef"
+        },
+        {
+          "address": "0x52560eBc7920617c9b7328186D1F4A136eAF07F4",
+          "topics": [
+            "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822",
+            "0x0000000000000000000000000f4610ab02920a99f639f675085a5d3e24b0d7ae",
+            "0x00000000000000000000000028e526e9589ebf343ed721424716a4b1a1a13e09"
+          ],
+          "data": "0x00000000000000000000000000000000000000000000021e19e0c9bab240000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030b1ee9165cddaa0c6",
+          "blockNumber": 8971994,
+          "transactionHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+          "transactionIndex": 107,
+          "blockHash": "0x6dad41901d08c5dc0ed23dbafc07817a999b4fffc41522288735c3e968db3ba5",
+          "logIndex": 461,
+          "removed": false,
+          "id": "log_84b40320"
+        }
+      ],
+      "logsBloom": "0x0060000000000010000000008000000000000000000000c000000000000000000000000000200000000000000000000000000000000000000000000000200000000000000000000000000008000000200000000000000000000000000000000000000000000000000000000000000000010000000000000000800010000000000000000000010000000000000000000000000000000000080200004000000000020000000000000000000000200000000000000000000000000000000000000000000002002000020000000000001000000000000020001000000000000000000010000000000000000000000000002080000000000000000080000002000000",
+      "status": true,
+      "to": "0x0f4610ab02920a99f639f675085a5d3e24b0d7ae",
+      "transactionHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+      "transactionIndex": 107,
+      "type": "0x0"
+    };
+    const expected = {
+      "valueUSD": 898.265060593660240070,
+      "swapAt": new Date("2021-07-08T08:42:05.000Z"),
+      "txHash": "0xabf7f4a13e72cac78212ada2a1a2c340f7a17bf5612a463cffa48896814f433c",
+      "blockNumber": 8971994,
+      "swapper": "0x28e526e9589ebf343ed721424716a4b1a1a13e09",
+      "router": "0x0f4610ab02920a99f639f675085a5d3e24b0d7ae",
+      "tokenOut": "0x084bb94e93891D74579B54Ab63ED24C4ef9cd5Ef",
+      "tokenOutName": "Foodcourt Coupon",
+      "tokenOutDecimal": "18",
+      "tokenOutSymbol": "COUPON",
+      "amountOut": "10000000000000000000000",
+      "tokenIn": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+      "tokenInName": "BUSD Token",
+      "tokenInSymbol": "BUSD",
+      "tokenInDecimal": "18",
+      "amountIn": "898265060593660240070"
+    };
+
+    let swap = await SwapParser.parseSwapTx(tx);
+    swap.should.deep.eq(expected);
+  });
 });
