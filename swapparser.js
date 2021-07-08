@@ -46,20 +46,32 @@ swapparser.parseSwapTx = async function parseSwapTx(tx) {
       let amount = (web3.eth.abi.decodeParameters(['uint256'], log.data))[0];
       let src = (web3.eth.abi.decodeParameters(['address'], log.topics[1]))[0].toLowerCase();
       let dst = (web3.eth.abi.decodeParameters(['address'], log.topics[2]))[0].toLowerCase();
-      if (swap.swapper === dst || (dst === swap.router && log.address === wrapBNBAddress) && swap.tokenIn === undefined) {
+      if (swap.swapper === dst || (dst === swap.router && log.address === wrapBNBAddress)) {
         // transfer from swapper or transfer native from wrapper router.
-        swap.tokenIn = log.address;
-        swap.tokenInName = tokenInfo.name;
-        swap.tokenInSymbol = tokenInfo.symbol;
-        swap.tokenInDecimal = tokenInfo.decimal;
-        swap.amountIn = amount;
-      } else if (swap.swapper === src || (src === swap.router && log.address === wrapBNBAddress) && swap.tokenOut === undefined) {
+        if (swap.tokenIn === undefined) {
+          swap.tokenIn = log.address;
+          swap.tokenInName = tokenInfo.name;
+          swap.tokenInSymbol = tokenInfo.symbol;
+          swap.tokenInDecimal = tokenInfo.decimal;
+          swap.amountIn = amount;
+        } else if (swap.tokenIn === log.address) {
+          if (parseInt(amount) > parseInt(swap.tokenIn)) {
+            swap.amountIn = amount;
+          }
+        }
+      } else if (swap.swapper === src || (src === swap.router && log.address === wrapBNBAddress)) {
         // transfer from swapper or transfer native from wrapper router.
-        swap.tokenOut = log.address;
-        swap.tokenOutName = tokenInfo.name;
-        swap.tokenOutDecimal = tokenInfo.decimal;
-        swap.tokenOutSymbol = tokenInfo.symbol;
-        swap.amountOut = amount;
+        if (swap.tokenOut === undefined) {
+          swap.tokenOut = log.address;
+          swap.tokenOutName = tokenInfo.name;
+          swap.tokenOutDecimal = tokenInfo.decimal;
+          swap.tokenOutSymbol = tokenInfo.symbol;
+          swap.amountOut = amount;
+        } else if (swap.tokenOut === log.address) {
+          if (parseInt(amount) > parseInt(swap.tokenOut)) {
+            swap.tokenOut = amount;
+          }
+        }
       }
     }
   }
