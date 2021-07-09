@@ -3,6 +3,7 @@ require('chai')
   .should();
 
 const SwapParser = require('../swapparser');
+const rpcEndpoint = ['https://bsc.getblock.io/mainnet/?api_key=0be84439-05b5-4fc4-b98f-45e23dddd124'];
 
 describe('Parse swap transactions', function () {
   this.timeout(10000);
@@ -167,7 +168,7 @@ describe('Parse swap transactions', function () {
       amountIn: '5999613955027669732978'
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.eq(expected);
   });
 
@@ -331,7 +332,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "37314764246705452050"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.eq(expected);
   });
 
@@ -465,7 +466,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "4837749155538995"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.eq(expected);
   });
 
@@ -583,7 +584,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "898265060593660240070"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.eq(expected);
   });
 
@@ -701,7 +702,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "17175554799930809520"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.eq(expected);
   });
 
@@ -834,7 +835,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "6333970641775251002"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.eq(expected);
   });
 
@@ -981,7 +982,7 @@ describe('Parse swap transactions', function () {
     };
     const expected = 0;
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.equal(expected);
   });
 
@@ -1145,7 +1146,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "960283138357363581086414935"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.equal(expected);
   });
 
@@ -1341,7 +1342,7 @@ describe('Parse swap transactions', function () {
       "amountIn": "789694388276576396"
     };
 
-    let swap = await SwapParser.parseSwapTx(tx);
+    let swap = await SwapParser.parseSwapTx(tx, rpcEndpoint);
     swap.should.deep.equal(expected);
   });
 });
