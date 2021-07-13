@@ -2,7 +2,8 @@ let Web3 = require('web3');
 const nodeURL = 'wss://bsc-ws-node.nariox.org:443';
 let web3 = new Web3(nodeURL);
 
-let Parser = require('./swapparser');
+const Parser = require('./swapparser');
+const Swap = require('./models/swap');
 
 // const GetBlockAPIKeys = require('./apikeys.json');
 // const endpoints = GetBlockAPIKeys.map(apikey => `https://bsc.getblock.io/mainnet/?api_key=${apikey}`);
@@ -39,8 +40,8 @@ let subscription = web3.eth.subscribe('logs', {
       } else if (swap === 1) {
         // dup
       } else {
-        // TODO insert swap record to DB
         console.log(swap);
+        await Swap.add(swap);
       }
     }, 1000);
   }
