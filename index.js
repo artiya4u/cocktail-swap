@@ -10,7 +10,6 @@ let Parser = require('./swapparser');
 // Use all endpoint to prevent calling limit
 const endpoints = [
   'https://bsc-dataseed.binance.org/',
-  'https://bsc-dataseed.binance.org/',
   'https://bsc-dataseed1.defibit.io/',
   'https://bsc-dataseed1.ninicoin.io/',
   'https://bsc-dataseed2.defibit.io/',
@@ -36,6 +35,6 @@ let subscription = web3.eth.subscribe('logs', {
       let tx = await web3.eth.getTransactionReceipt(result.transactionHash);
       let swap = await Parser.parseSwapTx(tx, endpoints);
       // TODO insert swap record to DB
-    }, 1000);
+    }, 10000);
   }
 });

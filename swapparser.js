@@ -1,7 +1,6 @@
 let Web3 = require('web3');
 let Contract = require('web3-eth-contract');
 
-const blockTime = {};
 const tokenInfoMap = {};
 const wrapBNBAddress = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 const usdTokens = [
@@ -10,20 +9,41 @@ const usdTokens = [
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
 ];
 
+const providerSelector = async (endpoints, blockNumber) => {
+  let selectedProvider = null;
+  for (let i = 0; i < endpoints.length; i++) {
+    let endpoint = endpoints[i];
+    let web3 = new Web3(endpoint);
+    let b = null;
+    await web3.eth.getBlock(blockNumber)
+      .then((block) => {
+        selectedProvider = web3;
+        b = block;
+      })
+      .catch(() => {
+        console.log(`Provider ${endpoint} not available`);
+      });
+    if (b) {
+      return { selectedProvider, timestamp: b.timestamp, endpoint };
+    }
+  }
+  return false;
+};
+
 const swapparser = {};
-swapparser.parseSwapTx = async function parseSwapTx(tx, endpoints) {
-  let endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
-  Contract.setProvider(endpoint);
-  let web3 = new Web3(endpoint);
-  let timestamp = blockTime[tx.blockNumber];
-  if (timestamp === undefined) {
-    timestamp = (await web3.eth.getBlock(tx.blockNumber)).timestamp;
-    blockTime[tx.blockNumber] = timestamp;
+swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
+  let p = await providerSelector(endpoints, tx.blockNumber);
+  let web3 = null;
+  if (p) {
+    web3 = p.selectedProvider;
+    Contract.setProvider(p.endpoint);
+  } else {
+    return;
   }
 
   const swap = {
     valueUSD: null,
-    swapAt: new Date(timestamp * 1000),
+    swapAt: new Date(p.timestamp * 1000),
     txHash: tx.transactionHash,
     blockNumber: tx.blockNumber,
     swapper: tx.from,
@@ -40,7 +60,7 @@ swapparser.parseSwapTx = async function parseSwapTx(tx, endpoints) {
         let name = await contract.methods.name().call();
         let decimal = await contract.methods.decimals().call();
         let symbol = await contract.methods.symbol().call();
-        tokenInfo = {symbol, name, decimal};
+        tokenInfo = { symbol, name, decimal };
         tokenInfoMap[log.address] = tokenInfo;
       }
       let amount = (web3.eth.abi.decodeParameters(['uint256'], log.data))[0];
