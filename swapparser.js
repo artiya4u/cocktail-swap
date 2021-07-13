@@ -146,8 +146,7 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
         }
       }
     } catch (e) {
-      console.log(e.message);
-      console.log(swap.txHash);
+      console.log(`swap.txHash: ${e.message}`);
     }
   }
   if (swap.tokenIn === swap.tokenOut) {
