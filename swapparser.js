@@ -12,7 +12,8 @@ const usdTokens = [
 const providerSelector = async (endpoints, blockNumber) => {
   let selectedProvider = null;
   for (let i = 0; i < endpoints.length; i++) {
-    let endpoint = endpoints[i];
+    let ran = Math.floor(Math.random() * endpoints.length);
+    let endpoint = endpoints[ran];
     let web3 = new Web3(endpoint);
     let b = null;
     await web3.eth.getBlock(blockNumber)
