@@ -39,8 +39,6 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
     return 1;
   }
   processed[tx.transactionHash] = true;
-
-  console.log(`PARSING: ${tx.transactionHash}`);
   let p = await providerSelector(endpoints, tx.blockNumber);
   let web3 = null;
   if (p) {

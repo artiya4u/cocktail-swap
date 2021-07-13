@@ -40,6 +40,7 @@ let subscription = web3.eth.subscribe('logs', {
         // dup
       } else {
         // TODO insert swap record to DB
+        console.log(swap);
       }
     }, 1000);
   }
