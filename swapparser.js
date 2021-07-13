@@ -9,6 +9,9 @@ const usdTokens = [
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
 ];
 
+const swapparser = {};
+const processed = {};
+
 const providerSelector = async (endpoints, blockNumber) => {
   let selectedProvider = null;
   for (let i = 0; i < endpoints.length; i++) {
@@ -31,8 +34,13 @@ const providerSelector = async (endpoints, blockNumber) => {
   return false;
 };
 
-const swapparser = {};
 swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
+  if (processed[tx.transactionHash] !== undefined) {
+    return 1;
+  }
+  processed[tx.transactionHash] = true;
+
+  console.log(`PARSING: ${tx.transactionHash}`);
   let p = await providerSelector(endpoints, tx.blockNumber);
   let web3 = null;
   if (p) {
@@ -143,11 +151,15 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
             priceTOKENWBNB = reserves._reserve0 / reserves._reserve1;
           }
           swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENWBNB * priceBNBUSD / Math.pow(10, 18 - decimal);
-          console.log(swap);
         }
       }
     } catch (e) {
       console.log(`ERROR: ${swap.txHash} : ${e.message}`);
+      if (e.message === 'Invalid JSON RPC response: ""') {
+        // parse again when node down
+        delete processed[tx.transactionHash];
+        return await swapparser.parseSwapTx(tx, endpoints);
+      }
     }
   }
   if (swap.tokenIn === swap.tokenOut) {

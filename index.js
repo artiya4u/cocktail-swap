@@ -34,7 +34,13 @@ let subscription = web3.eth.subscribe('logs', {
       // get the transaction
       let tx = await web3.eth.getTransactionReceipt(result.transactionHash);
       let swap = await Parser.parseSwapTx(tx, endpoints);
-      // TODO insert swap record to DB
-    }, 10000);
+      if (swap === 0) {
+        console.log(tx.transactionHash, swap);
+      } else if (swap === 1) {
+        // dup
+      } else {
+        // TODO insert swap record to DB
+      }
+    }, 1000);
   }
 });
