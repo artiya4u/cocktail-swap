@@ -5,8 +5,8 @@ let web3 = new Web3(nodeURL);
 const Parser = require('./swapparser');
 const Swap = require('./models/swap');
 
-// const GetBlockAPIKeys = require('./apikeys.json');
-// const endpoints = GetBlockAPIKeys.map(apikey => `https://bsc.getblock.io/mainnet/?api_key=${apikey}`);
+const GetBlockAPIKeys = require('./apikeys.json');
+const endpoints0 = GetBlockAPIKeys.map(apikey => `https://bsc.getblock.io/mainnet/?api_key=${apikey}`);
 
 // Use all endpoint to prevent calling limit
 const endpoints = [
@@ -24,6 +24,8 @@ const endpoints = [
   'https://bsc-dataseed3.binance.org/',
   'https://bsc-dataseed4.binance.org/',
 ];
+
+endpoints.push(endpoints0);
 
 // Filter swap log event.
 let subscription = web3.eth.subscribe('logs', {
