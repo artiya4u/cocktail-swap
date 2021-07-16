@@ -9,7 +9,7 @@ const GetBlockAPIKeys = require('./apikeys.json');
 const endpoints0 = GetBlockAPIKeys.map(apikey => `https://bsc.getblock.io/mainnet/?api_key=${apikey}`);
 
 // Use all endpoint to prevent calling limit
-const endpoints = [
+let endpoints = [
   'https://bsc-dataseed.binance.org/',
   'https://bsc-dataseed1.defibit.io/',
   'https://bsc-dataseed1.ninicoin.io/',
@@ -25,7 +25,7 @@ const endpoints = [
   'https://bsc-dataseed4.binance.org/',
 ];
 
-endpoints.push(endpoints0);
+endpoints = endpoints.concat(endpoints0);
 
 // Filter swap log event.
 let subscription = web3.eth.subscribe('logs', {
