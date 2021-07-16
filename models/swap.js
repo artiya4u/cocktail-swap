@@ -1,7 +1,7 @@
 const mysql = require('./mysql');
 const swap = {};
 
-swap.add = async function add(swap) {
+swap.add = async function add (swap) {
   return mysql.query(`
       INSERT IGNORE INTO swaps
       (txHash,
@@ -41,7 +41,7 @@ swap.add = async function add(swap) {
   ]);
 };
 
-swap.fetch = async function fetch() {
+swap.fetch = async function fetch () {
   return mysql.query(`
       SELECT txHash,
              valueUSD,
@@ -63,12 +63,11 @@ swap.fetch = async function fetch() {
       WHERE valueUSD > 0 -- ignore error
         AND swapAt BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
       ORDER BY swapAt
-      LIMIT 100;
+      LIMIT 10;
   `);
 };
 
-
-swap.fetchBetween = async function fetchBetween(startTime, endTime) {
+swap.fetchBetween = async function fetchBetween (startTime, endTime) {
   return mysql.query(`
       SELECT txHash,
              valueUSD,
