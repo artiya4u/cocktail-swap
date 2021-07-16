@@ -46,7 +46,7 @@ list.totalGain = async function totalGain (listTrade) {
     for (const asset of Object.keys(traderPort)) {
       let decimal = traderPort[asset].token.decimal;
       let assetAmount = traderPort[asset].sum;
-      let assetPrice = await Price.price(asset, 0, traderPort[asset].router);
+      let assetPrice = await Price.price(asset, 0, traderPort[asset].router, traderPort[asset].pair);
       if (assetPrice === null) {
         continue;
       }

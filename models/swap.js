@@ -19,9 +19,8 @@ swap.add = async function add (swap) {
        tokenInName,
        tokenInSymbol,
        tokenInDecimal,
-       amountIn,
-       pair)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+       amountIn)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `, [
     swap.txHash,
     swap.swapAt,
@@ -60,12 +59,12 @@ swap.fetch = async function fetch () {
              tokenInName,
              tokenInDecimal,
              tokenInSymbol,
-             amountIn,
-             pair
+             amountIn
       FROM swaps
       WHERE valueUSD > 0 -- ignore error
         AND swapAt BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
-      ORDER BY swapAt;
+      ORDER BY swapAt
+      LIMIT 100;
   `);
 };
 
@@ -86,8 +85,7 @@ swap.fetchBetween = async function fetchBetween (startTime, endTime) {
              tokenInName,
              tokenInDecimal,
              tokenInSymbol,
-             amountIn,
-             pair
+             amountIn
       FROM swaps
       WHERE valueUSD > 0 -- ignore error
         AND swapAt BETWEEN ? AND ?

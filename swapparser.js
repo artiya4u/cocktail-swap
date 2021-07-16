@@ -124,7 +124,6 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
       let reserves = await pairBNBUSD.methods.getReserves().call({}, tx.blockNumber);
       let priceBNBUSD = reserves._reserve1 / reserves._reserve0;
       if ([swap.tokenOut, swap.tokenIn].includes(wrapBNBAddress)) {
-        swap.pair = '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16';
         if (swap.tokenIn === wrapBNBAddress) {
           swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenInDecimal) * priceBNBUSD;
         }
@@ -148,7 +147,6 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
           pairAddress = await factoryContract.methods.getPair(baseToken, wrapBNBAddress).call();
         }
         if (pairAddress !== '0x0000000000000000000000000000000000000000') {
-          swap.pair = pairAddress;
           let pairTOKENWBNB = new Contract(require('./abi/pair.json'), pairAddress);
           let reserves = await pairTOKENWBNB.methods.getReserves().call({}, tx.blockNumber);
           let priceTOKENWBNB = reserves._reserve1 / reserves._reserve0;
