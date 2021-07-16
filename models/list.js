@@ -8,9 +8,6 @@ list.totalGain = async function totalGain (listTrade) {
     if (traderTx[t.swapper] === undefined) {
       traderTx[t.swapper] = {};
     }
-    if (traderTx[t.swapper] === undefined) {
-      traderTx[t.swapper] = {};
-    }
     // Buy
     if (traderTx[t.swapper][t.tokenIn] === undefined) {
       traderTx[t.swapper][t.tokenIn] = { sum: 0, out: 0, buy: 0, sell: 0 };
@@ -19,19 +16,17 @@ list.totalGain = async function totalGain (listTrade) {
       traderTx[t.swapper][t.tokenOut] = { sum: 0, out: 0, buy: 0, sell: 0 };
     }
     traderTx[t.swapper][t.tokenIn].sum += parseInt(t.amountIn);
-    traderTx[t.swapper][t.tokenOut].sum -= parseInt(t.tokenOut);
-    traderTx[t.swapper][t.tokenOut].out += parseInt(t.tokenOut);
+    traderTx[t.swapper][t.tokenOut].sum -= parseInt(t.amountOut);
+    traderTx[t.swapper][t.tokenOut].out += parseInt(t.amountOut);
     traderTx[t.swapper][t.tokenIn].token = {
       symbol: t.tokenInSymbol,
       name: t.tokenInName,
       decimal: t.tokenInDecimal,
-      router: t.router,
     };
     traderTx[t.swapper][t.tokenOut].token = {
       symbol: t.tokenOutSymbol,
       name: t.tokenOutName,
       decimal: t.tokenOutDecimal,
-      router: t.router,
     };
     traderTx[t.swapper][t.tokenIn].router = t.router;
     traderTx[t.swapper][t.tokenOut].router = t.router;
