@@ -62,8 +62,7 @@ swap.fetch = async function fetch () {
       FROM swaps
       WHERE valueUSD > 0 -- ignore error
         AND swapAt BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
-      ORDER BY swapAt
-      LIMIT 1;
+      ORDER BY swapAt;
   `);
 };
 
