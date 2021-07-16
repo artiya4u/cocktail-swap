@@ -39,6 +39,7 @@ swap.add = async function add (swap) {
     swap.tokenInSymbol,
     swap.tokenInDecimal,
     swap.amountIn,
+    swap.pair,
   ]);
 };
 
