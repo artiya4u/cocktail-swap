@@ -5,7 +5,7 @@ const endpoints = GetBlockAPIKeys.map(apikey => `https://bsc.getblock.io/mainnet
 const wrapBNBAddress = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 
 const price = {};
-price.price = async function price(token, blockNumber, router) {
+price.price = async function price (token, blockNumber, router) {
   try {
     let ran = Math.floor(Math.random() * endpoints.length);
     let endpoint = endpoints[ran];
@@ -50,6 +50,6 @@ price.price = async function price(token, blockNumber, router) {
   }
 
   return null;
-}
+};
 
 module.exports = price;

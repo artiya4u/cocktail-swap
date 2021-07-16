@@ -2,7 +2,7 @@ const Swap = require('./swap');
 const Price = require('./price');
 const list = {};
 
-list.totalGain = async function totalGain(listTrade) {
+list.totalGain = async function totalGain (listTrade) {
   let traderTx = {};
   for (let t of listTrade) {
     if (traderTx[t.swapper] === undefined) {
@@ -13,10 +13,10 @@ list.totalGain = async function totalGain(listTrade) {
     }
     // Buy
     if (traderTx[t.swapper][t.tokenIn] === undefined) {
-      traderTx[t.swapper][t.tokenIn] = {sum: 0, out: 0, buy: 0, sell: 0};
+      traderTx[t.swapper][t.tokenIn] = { sum: 0, out: 0, buy: 0, sell: 0 };
     }
     if (traderTx[t.swapper][t.tokenOut] === undefined) {
-      traderTx[t.swapper][t.tokenOut] = {sum: 0, out: 0, buy: 0, sell: 0};
+      traderTx[t.swapper][t.tokenOut] = { sum: 0, out: 0, buy: 0, sell: 0 };
     }
     traderTx[t.swapper][t.tokenIn].sum += t.amountIn;
     traderTx[t.swapper][t.tokenOut].sum -= t.tokenOut;
@@ -75,13 +75,13 @@ list.totalGain = async function totalGain(listTrade) {
   return result;
 };
 
-list.top = async function top(listTrade, sort) {
+list.top = async function top (listTrade, sort) {
   let field = 'profit';
   if (sort !== undefined) {
     field = sort;
   }
 
-  function compare(a, b) {
+  function compare (a, b) {
     let comparison = 0;
     if (a[field] > b[field]) {
       comparison = -1;
@@ -94,7 +94,7 @@ list.top = async function top(listTrade, sort) {
   return (await list.totalGain(listTrade)).sort(compare);
 };
 
-list.getReturnHistory = async function getReturnHistory(period) {
+list.getReturnHistory = async function getReturnHistory (period) {
   const periodMilliSec = period * 24 * 3600 * 1000;
   let end = new Date();
   let start = new Date(end.getTime() - periodMilliSec);
@@ -116,11 +116,11 @@ list.getReturnHistory = async function getReturnHistory(period) {
     start = new Date(end.getTime() - periodMilliSec);
     length += 1;
   }
-  return {results: results, length: length};
+  return { results: results, length: length };
 };
 
-list.totalReturn = async function totalReturn(period) {
-  const {results, length} = await this.getReturnHistory(period);
+list.totalReturn = async function totalReturn (period) {
+  const { results, length } = await this.getReturnHistory(period);
 
   let compResults = [];
   for (const trader of Object.keys(results)) {
@@ -134,10 +134,10 @@ list.totalReturn = async function totalReturn(period) {
     const n = gains.length;
     const mean = gains.reduce((a, b) => a + b) / n;
     const sd = Math.sqrt(gains.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n);
-    compResults.push({trader: trader, meanReturn: mean, cumulativeReturn: trc, sd: sd, gains: gains});
+    compResults.push({ trader: trader, meanReturn: mean, cumulativeReturn: trc, sd: sd, gains: gains });
   }
 
-  function compare(a, b) {
+  function compare (a, b) {
     let field = 'meanReturn';
     let comparison = 0;
     if (a[field] > b[field]) {
@@ -152,5 +152,3 @@ list.totalReturn = async function totalReturn(period) {
 };
 
 module.exports = list;
-
-
