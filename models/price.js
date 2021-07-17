@@ -9,6 +9,7 @@ const usdTokens = [
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
 ];
 const priceAll = {};
+const pairs = {};
 
 const price = {};
 price.price = async function price (token, blockNumber, router) {
@@ -43,14 +44,18 @@ price.price = async function price (token, blockNumber, router) {
     if (token === wrapBNBAddress) {
       tokenPrice = priceBNBUSD;
     } else {
-      let routerContract = new Contract(require('../abi/router.json'), router);
-      let factoryAddress = await routerContract.methods.factory().call();
-      let factoryContract = new Contract(require('../abi/factory.json'), factoryAddress);
-      let pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
-      if (pairAddress === '0x0000000000000000000000000000000000000000') {
+      let pairAddress = pairs[token];
+      if (pairAddress === undefined) {
+        let routerContract = new Contract(require('../abi/router.json'), router);
+        let factoryAddress = await routerContract.methods.factory().call();
+        let factoryContract = new Contract(require('../abi/factory.json'), factoryAddress);
         pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
+        if (pairAddress === '0x0000000000000000000000000000000000000000') {
+          pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
+        }
       }
       if (pairAddress !== '0x0000000000000000000000000000000000000000') {
+        pairs[token] = pairAddress;
         let pairTOKENWBNB = new Contract(require('../abi/pair.json'), pairAddress);
         let reserves;
         if (blockNumber === 0) {
