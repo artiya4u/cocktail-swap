@@ -34,6 +34,32 @@ list.totalGain = async function totalGain (listTrade) {
     traderTx[t.swapper][t.tokenOut].sell += 1;
   }
 
+  let pricePromises = [];
+  let assetRouters = {};
+  let assetPrices = {};
+  for (const trader of Object.keys(traderTx)) {
+    let traderPort = traderTx[trader];
+    for (const asset of Object.keys(traderPort)) {
+      console.log(`${asset}-${traderPort[asset].router}`);
+      assetRouters[`${asset}-${traderPort[asset].router}`] = traderPort[asset].router;
+    }
+  }
+
+  for (const assetRouter of Object.keys(assetRouters)) {
+    let asset = assetRouter.split('-')[0];
+    pricePromises.push(Price.price(asset, 0, assetRouters[assetRouter]));
+  }
+
+  console.log(pricePromises.length);
+  let prices = await Promise.all(pricePromises);
+  for (let i = 0; i < prices.length; i++) {
+    let asset = Object.keys(assetRouters)[i].split('-')[0];
+    if (prices[i] !== null) {
+      assetPrices[asset] = prices[i];
+    }
+  }
+  console.log('end of pricePromises');
+
   let result = [];
   for (const trader of Object.keys(traderTx)) {
     let traderPort = traderTx[trader];
@@ -46,8 +72,8 @@ list.totalGain = async function totalGain (listTrade) {
     for (const asset of Object.keys(traderPort)) {
       let decimal = traderPort[asset].token.decimal;
       let assetAmount = traderPort[asset].sum;
-      let assetPrice = await Price.price(asset, 0, traderPort[asset].router, traderPort[asset].pair);
-      if (assetPrice === null) {
+      let assetPrice = assetPrices[asset];
+      if (assetPrice === undefined) {
         continue;
       }
       allProfit += (assetAmount / Math.pow(10, decimal)) * assetPrice / Math.pow(10, 18 - decimal);

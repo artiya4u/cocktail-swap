@@ -13,14 +13,19 @@ const pairs = {};
 
 const price = {};
 price.price = async function price (token, blockNumber, router) {
+  let start = new Date();
   try {
     // USD token = 1 USD
     if (usdTokens.includes(token)) {
+      let end = new Date();
+      console.log(`Token ${token} Router ${router} Used ${end - start}ms 1.0 (USD)`);
       return 1;
     }
 
     let p = priceAll[token];
     if (p !== undefined) {
+      let end = new Date();
+      console.log(`Token ${token} Router ${router} Used ${end - start}ms ${p} (CACHED)`);
       return p;
     }
     let tokenPrice = null;
@@ -73,6 +78,8 @@ price.price = async function price (token, blockNumber, router) {
     }
 
     priceAll[token] = tokenPrice; // Caching price
+    let end = new Date();
+    console.log(`Token ${token} Router ${router} Used ${end - start}ms ${tokenPrice}`);
     return tokenPrice;
   } catch (e) {
     return null;
