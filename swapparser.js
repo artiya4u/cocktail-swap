@@ -19,14 +19,19 @@ const providerSelector = async (endpoints, blockNumber) => {
     let endpoint = endpoints[ran];
     let web3 = new Web3(endpoint);
     let b = null;
-    await web3.eth.getBlock(blockNumber)
-      .then((block) => {
-        selectedProvider = web3;
-        b = block;
-      })
-      .catch(() => {
-        console.log(`Provider ${endpoint} not available`);
-      });
+    try {
+      await web3.eth.getBlock(blockNumber)
+        .then((block) => {
+          selectedProvider = web3;
+          b = block;
+        })
+        .catch(() => {
+          console.log(`Provider ${endpoint} not available`);
+        });
+    } catch (e) {
+      console.log(`Provider ${endpoint} not available`);
+    }
+
     if (b) {
       return { selectedProvider, timestamp: b.timestamp, endpoint };
     }
@@ -55,6 +60,7 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
     blockNumber: tx.blockNumber,
     swapper: tx.from,
     router: tx.to,
+    pair: null,
   };
 
   for (const log of tx.logs) {
