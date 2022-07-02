@@ -162,7 +162,7 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
       if (e.message === 'Invalid JSON RPC response: ""') {
         // parse again when node down
         delete processed[tx.transactionHash];
-        return await swapparser.parseSwapTx(tx, endpoints);
+        return swapparser.parseSwapTx(tx, endpoints);
       }
     }
   }
