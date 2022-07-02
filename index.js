@@ -1,5 +1,5 @@
 let Web3 = require('web3');
-const nodeURL = 'wss://bsc-ws-node.nariox.org:443';
+const nodeURL = 'wss://bsc-mainnet.nodereal.io/ws/v1/ab63ba11285c4d998f1c8da1a79f1c8f';
 let web3 = new Web3(nodeURL);
 
 const Parser = require('./swapparser');
@@ -9,7 +9,7 @@ const GetBlockAPIKeys = require('./apikeys.json');
 const endpoints0 = GetBlockAPIKeys.map(apikey => `https://bsc.getblock.io/mainnet/?api_key=${apikey}`);
 
 // Use all endpoint to prevent calling limit
-const endpoints = [
+let endpoints = [
   'https://bsc-dataseed.binance.org/',
   'https://bsc-dataseed1.defibit.io/',
   'https://bsc-dataseed1.ninicoin.io/',
@@ -25,18 +25,28 @@ const endpoints = [
   'https://bsc-dataseed4.binance.org/',
 ];
 
-endpoints.push(endpoints0);
+endpoints = endpoints.concat(endpoints0);
 
 // Filter swap log event.
-let subscription = web3.eth.subscribe('logs', {
+web3.eth.subscribe('logs', {
   topics: ['0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822'],
 }, async function (error, result) {
   if (!error) {
-    // wait for 30s for other node to have tx info.
+    // wait for 3s for other node to have tx info.
     setTimeout(async function () {
       // get the transaction
       let tx = await web3.eth.getTransactionReceipt(result.transactionHash);
-      let swap = await Parser.parseSwapTx(tx, endpoints);
+      let swap;
+      try {
+        swap = await Parser.parseSwapTx(tx, endpoints);
+      } catch (e) { // Try again.
+        try {
+          swap = await Parser.parseSwapTx(tx, endpoints);
+        } catch (e) { // Stop.
+          return;
+        }
+      }
+
       if (swap === 0) {
         console.log(tx.transactionHash, swap);
       } else if (swap === 1) {
@@ -45,6 +55,8 @@ let subscription = web3.eth.subscribe('logs', {
         console.log(swap);
         await Swap.add(swap);
       }
-    }, 1000);
+    }, 3000);
+  } else {
+    console.log(error);
   }
 });
