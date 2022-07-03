@@ -65,7 +65,6 @@ swap.fetch = async function fetch () {
         AND swapAt BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
         AND router = '0x10ed43c718714eb63d5aa57b78b54704e256024e'
       ORDER BY swapAt
-      LIMIT 100;
   `);
 };
 

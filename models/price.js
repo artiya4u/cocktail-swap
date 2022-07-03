@@ -50,30 +50,42 @@ price.price = async function price (token, blockNumber, router) {
       tokenPrice = priceBNBUSD;
     } else {
       let pairAddress = pairs[token];
+      let isUSDPair = false;
       if (pairAddress === undefined) {
         let routerContract = new Contract(require('../abi/router.json'), router);
         let factoryAddress = await routerContract.methods.factory().call();
         let factoryContract = new Contract(require('../abi/factory.json'), factoryAddress);
         pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
         if (pairAddress === '0x0000000000000000000000000000000000000000') {
-          pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
+          // Try usd pairs
+          for (const usdToken of usdTokens) {
+            pairAddress = await factoryContract.methods.getPair(token, usdToken).call();
+            if (pairAddress !== '0x0000000000000000000000000000000000000000') {
+              isUSDPair = true;
+              break;
+            }
+          }
         }
       }
       if (pairAddress !== '0x0000000000000000000000000000000000000000') {
         pairs[token] = pairAddress;
-        let pairTOKENWBNB = new Contract(require('../abi/pair.json'), pairAddress);
+        let pairTOKEN = new Contract(require('../abi/pair.json'), pairAddress);
         let reserves;
         if (blockNumber === 0) {
-          reserves = await pairTOKENWBNB.methods.getReserves().call();
+          reserves = await pairTOKEN.methods.getReserves().call();
         } else {
-          reserves = await pairTOKENWBNB.methods.getReserves().call({}, blockNumber);
+          reserves = await pairTOKEN.methods.getReserves().call({}, blockNumber);
         }
-        let priceTOKENWBNB = reserves._reserve1 / reserves._reserve0;
-        let token0 = await pairTOKENWBNB.methods.token0().call();
+        let priceTOKEN = reserves._reserve1 / reserves._reserve0;
+        let token0 = await pairTOKEN.methods.token0().call();
         if (token0.toLowerCase() === wrapBNBAddress.toLowerCase()) {
-          priceTOKENWBNB = reserves._reserve0 / reserves._reserve1;
+          priceTOKEN = reserves._reserve0 / reserves._reserve1;
         }
-        tokenPrice = priceTOKENWBNB * priceBNBUSD;
+        if (isUSDPair) {
+          tokenPrice = priceTOKEN;
+        } else {
+          tokenPrice = priceTOKEN * priceBNBUSD;
+        }
       }
     }
 

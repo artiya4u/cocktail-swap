@@ -138,23 +138,49 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
         let baseToken = swap.tokenOut;
         let amount = swap.amountOut;
         let decimal = swap.tokenOutDecimal;
+        let isUSDPair = false;
         let pairAddress = await factoryContract.methods.getPair(baseToken, wrapBNBAddress).call();
+        if (pairAddress === '0x0000000000000000000000000000000000000000') {
+          // Try usd pairs
+          for (const usdToken of usdTokens) {
+            pairAddress = await factoryContract.methods.getPair(baseToken, usdToken).call();
+            if (pairAddress !== '0x0000000000000000000000000000000000000000') {
+              isUSDPair = true;
+              break;
+            }
+          }
+        }
         if (pairAddress === '0x0000000000000000000000000000000000000000') {
           // cannot find out token pair to bnb, switch to token in.
           baseToken = swap.tokenIn;
           amount = swap.amountIn;
           decimal = swap.tokenInDecimal;
           pairAddress = await factoryContract.methods.getPair(baseToken, wrapBNBAddress).call();
+          if (pairAddress === '0x0000000000000000000000000000000000000000') {
+            // Try usd pairs
+            for (const usdToken of usdTokens) {
+              pairAddress = await factoryContract.methods.getPair(baseToken, usdToken).call();
+              if (pairAddress !== '0x0000000000000000000000000000000000000000') {
+                isUSDPair = true;
+                break;
+              }
+            }
+          }
         }
         if (pairAddress !== '0x0000000000000000000000000000000000000000') {
           let pairTOKENWBNB = new Contract(require('./abi/pair.json'), pairAddress);
           let reserves = await pairTOKENWBNB.methods.getReserves().call({}, tx.blockNumber);
-          let priceTOKENWBNB = reserves._reserve1 / reserves._reserve0;
+          let priceTOKENtoPair = reserves._reserve1 / reserves._reserve0;
           let token0 = await pairTOKENWBNB.methods.token0().call();
           if (token0.toLowerCase() === wrapBNBAddress.toLowerCase()) {
-            priceTOKENWBNB = reserves._reserve0 / reserves._reserve1;
+            priceTOKENtoPair = reserves._reserve0 / reserves._reserve1;
           }
-          swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENWBNB * priceBNBUSD / Math.pow(10, 18 - decimal);
+          if (isUSDPair) {
+            swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENtoPair;
+          } else {
+            let bnbPrice = priceBNBUSD / Math.pow(10, 18 - decimal);
+            swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENtoPair * bnbPrice;
+          }
         }
       }
     } catch (e) {
