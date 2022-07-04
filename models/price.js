@@ -40,7 +40,6 @@ price.price = async function price (token, blockNumber, router) {
       tokenPrice = await priceByEndpoint(token, blockNumber, router, endpoint);
       break;
     } catch (e) {
-      console.log(e)
     }
   }
 
