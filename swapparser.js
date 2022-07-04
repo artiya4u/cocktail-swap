@@ -1,5 +1,6 @@
 let Web3 = require('web3');
 let Contract = require('web3-eth-contract');
+const price = require('./models/price');
 
 const tokenInfoMap = {};
 const wrapBNBAddress = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
@@ -15,7 +16,7 @@ const processed = {};
 const providerSelector = async (endpoints, blockNumber) => {
   let selectedProvider = null;
   for (let i = 0; i < endpoints.length; i++) {
-    let ran = Math.floor(Math.random() * endpoints.length);
+    let ran = Math.floor(Math.random() * (endpoints.length - 1));
     let endpoint = endpoints[ran];
     let web3 = new Web3(endpoint);
     let b = null;
@@ -109,89 +110,29 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
     }
   }
 
-  if (swap.tokenIn !== undefined && swap.tokenOut !== undefined) {
-    // Use USD value
-    if (usdTokens.includes(swap.tokenIn)) {
-      swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenInDecimal);
-    }
-    if (usdTokens.includes(swap.tokenOut)) {
-      swap.valueUSD = swap.amountOut / Math.pow(10, swap.tokenOutDecimal);
-    }
-
-    try {
-      // Use Wrapped BNB / BUSD price to calculate value
-      let pairBNBUSD = new Contract(require('./abi/pair.json'), '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16');
-      let reserves = await pairBNBUSD.methods.getReserves().call({}, tx.blockNumber);
-      let priceBNBUSD = reserves._reserve1 / reserves._reserve0;
-      if ([swap.tokenOut, swap.tokenIn].includes(wrapBNBAddress)) {
-        if (swap.tokenIn === wrapBNBAddress) {
-          swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenInDecimal) * priceBNBUSD;
-        }
-        if (swap.tokenOut === wrapBNBAddress) {
-          swap.valueUSD = swap.amountOut / Math.pow(10, swap.tokenOutDecimal) * priceBNBUSD;
-        }
-      }
-      if (swap.valueUSD === null) { // Try TOKEN-USD and TOKEN-BNB
-        let routerContract = new Contract(require('./abi/router.json'), swap.router);
-        let factoryAddress = await routerContract.methods.factory().call();
-        let factoryContract = new Contract(require('./abi/factory.json'), factoryAddress);
-        let baseToken = swap.tokenOut;
-        let amount = swap.amountOut;
-        let decimal = swap.tokenOutDecimal;
-        let isUSDPair = false;
-        let pairAddress = await factoryContract.methods.getPair(baseToken, wrapBNBAddress).call();
-        if (pairAddress === '0x0000000000000000000000000000000000000000') {
-          // Try usd pairs
-          for (const usdToken of usdTokens) {
-            pairAddress = await factoryContract.methods.getPair(baseToken, usdToken).call();
-            if (pairAddress !== '0x0000000000000000000000000000000000000000') {
-              isUSDPair = true;
-              break;
-            }
-          }
-        }
-        if (pairAddress === '0x0000000000000000000000000000000000000000') {
-          // cannot find out token pair to bnb, switch to token in.
-          baseToken = swap.tokenIn;
-          amount = swap.amountIn;
-          decimal = swap.tokenInDecimal;
-          pairAddress = await factoryContract.methods.getPair(baseToken, wrapBNBAddress).call();
-          if (pairAddress === '0x0000000000000000000000000000000000000000') {
-            // Try usd pairs
-            for (const usdToken of usdTokens) {
-              pairAddress = await factoryContract.methods.getPair(baseToken, usdToken).call();
-              if (pairAddress !== '0x0000000000000000000000000000000000000000') {
-                isUSDPair = true;
-                break;
-              }
-            }
-          }
-        }
-        if (pairAddress !== '0x0000000000000000000000000000000000000000') {
-          let pairTOKENWBNB = new Contract(require('./abi/pair.json'), pairAddress);
-          let reserves = await pairTOKENWBNB.methods.getReserves().call({}, tx.blockNumber);
-          let priceTOKENtoPair = reserves._reserve1 / reserves._reserve0;
-          let token0 = await pairTOKENWBNB.methods.token0().call();
-          if (token0.toLowerCase() === wrapBNBAddress.toLowerCase()) {
-            priceTOKENtoPair = reserves._reserve0 / reserves._reserve1;
-          }
-          if (isUSDPair) {
-            swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENtoPair;
-          } else {
-            let bnbPrice = priceBNBUSD / Math.pow(10, 18 - decimal);
-            swap.valueUSD = (amount / Math.pow(10, decimal)) * priceTOKENtoPair * bnbPrice;
-          }
-        }
-      }
-    } catch (e) {
-      console.log(`ERROR: ${swap.txHash} : ${e.message}`);
-      if (e.message === 'Invalid JSON RPC response: ""') {
-        // parse again when node down
-        delete processed[tx.transactionHash];
-        return swapparser.parseSwapTx(tx, endpoints);
-      }
-    }
+  // Use USD value
+  if (usdTokens.includes(swap.tokenIn)) {
+    swap.valueUSD = swap.amountIn / Math.pow(10, swap.tokenInDecimal);
   }
+  if (usdTokens.includes(swap.tokenOut)) {
+    swap.valueUSD = swap.amountOut / Math.pow(10, swap.tokenOutDecimal);
+  }
+
+  if (swap.valueUSD === null) {
+    let tokenToGetPrice = swap.tokenIn;
+    let tokenToGetPriceDecimal = swap.tokenInDecimal;
+    let tokenAmount = swap.amountIn;
+    let tokenPrice = await price.price(tokenToGetPrice, swap.blockNumber, swap.router);
+    if (tokenPrice === null) {
+      tokenToGetPrice = swap.tokenOutDecimal;
+      tokenToGetPriceDecimal = swap.tokenOutDecimal;
+      tokenAmount = swap.amountOut;
+      tokenPrice = await price.price(tokenToGetPrice, swap.blockNumber, swap.router);
+    }
+    const amountRounded = tokenAmount / Math.pow(10, tokenToGetPriceDecimal);
+    swap.valueUSD = amountRounded * tokenPrice / Math.pow(10, 18 - tokenToGetPriceDecimal);
+  }
+
   if (swap.tokenIn === swap.tokenOut) {
     // Arbitrage tx ignored.
     return 0;
