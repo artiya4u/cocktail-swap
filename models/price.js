@@ -53,6 +53,8 @@ price.price = async function price (token, blockNumber, router) {
   return tokenPrice;
 };
 
+const priceAll = {};
+
 async function priceByEndpoint (token, blockNumber, router, endpoint) {
   // USD token = 1 USD
   if (usdTokens.includes(token)) {
@@ -62,14 +64,23 @@ async function priceByEndpoint (token, blockNumber, router, endpoint) {
   let tokenPrice = null;
   Contract.setProvider(endpoint);
 
-  let pairBNBUSD = new Contract(require('../abi/pair.json'), '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16');
-  let reserves;
-  if (blockNumber === 0) {
-    reserves = await pairBNBUSD.methods.getReserves().call();
-  } else {
-    reserves = await pairBNBUSD.methods.getReserves().call({}, blockNumber);
+  let cachedPrice = priceAll[`${token}-${blockNumber}`];
+  if (cachedPrice !== undefined) {
+    return cachedPrice;
   }
-  let priceBNBUSD = reserves._reserve1 / reserves._reserve0;
+
+  let priceBNBUSD = priceAll[`${wrapBNBAddress}-${blockNumber}`];
+  if (priceBNBUSD === undefined) {
+    let pairBNBUSD = new Contract(require('../abi/pair.json'), '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16');
+    let reserves;
+    if (blockNumber === 0) {
+      reserves = await pairBNBUSD.methods.getReserves().call();
+    } else {
+      reserves = await pairBNBUSD.methods.getReserves().call({}, blockNumber);
+    }
+    priceBNBUSD = reserves._reserve1 / reserves._reserve0;
+    priceAll[`${wrapBNBAddress}-${blockNumber}`] = priceBNBUSD;
+  }
 
   if (token === wrapBNBAddress) {
     tokenPrice = priceBNBUSD;
