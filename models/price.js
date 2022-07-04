@@ -49,7 +49,7 @@ price.price = async function price (token, blockNumber, router) {
   }
 
   let end = new Date();
-  console.log(`Token ${token} Router ${router} Used ${end - start}ms ${tokenPrice}`);
+  // console.log(`Token ${token} Router ${router} Used ${end - start}ms ${tokenPrice}`);
   return tokenPrice;
 };
 

@@ -51,7 +51,7 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
     web3 = p.selectedProvider;
     Contract.setProvider(p.endpoint);
   } else {
-    return;
+    return 0;
   }
 
   const swap = {
