@@ -26,9 +26,8 @@ const usdTokens = [
   '0x55d398326f99059fF775485246999027B3197955', // USDT
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
 ];
-const priceAll = {};
-const pairs = {};
 
+const pairs = {};
 const price = {};
 price.price = async function price (token, blockNumber, router) {
   let start = new Date();
@@ -45,6 +44,10 @@ price.price = async function price (token, blockNumber, router) {
     }
   }
 
+  if (isNaN(tokenPrice)) {
+    tokenPrice = null;
+  }
+
   let end = new Date();
   console.log(`Token ${token} Router ${router} Used ${end - start}ms ${tokenPrice}`);
   return tokenPrice;
@@ -56,25 +59,17 @@ async function priceByEndpoint (token, blockNumber, router, endpoint) {
     return 1;
   }
 
-  let p = priceAll[token];
-  if (p !== undefined) {
-    return p;
-  }
   let tokenPrice = null;
   Contract.setProvider(endpoint);
 
-  let priceBNBUSD = priceAll[wrapBNBAddress];
-  if (priceBNBUSD === undefined) {
-    let pairBNBUSD = new Contract(require('../abi/pair.json'), '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16');
-    let reserves;
-    if (blockNumber === 0) {
-      reserves = await pairBNBUSD.methods.getReserves().call();
-    } else {
-      reserves = await pairBNBUSD.methods.getReserves().call({}, blockNumber);
-    }
-    priceBNBUSD = reserves._reserve1 / reserves._reserve0;
-    priceAll[wrapBNBAddress] = priceBNBUSD;
+  let pairBNBUSD = new Contract(require('../abi/pair.json'), '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16');
+  let reserves;
+  if (blockNumber === 0) {
+    reserves = await pairBNBUSD.methods.getReserves().call();
+  } else {
+    reserves = await pairBNBUSD.methods.getReserves().call({}, blockNumber);
   }
+  let priceBNBUSD = reserves._reserve1 / reserves._reserve0;
 
   if (token === wrapBNBAddress) {
     tokenPrice = priceBNBUSD;
@@ -119,7 +114,6 @@ async function priceByEndpoint (token, blockNumber, router, endpoint) {
     }
   }
 
-  priceAll[token] = tokenPrice; // Caching price
   return tokenPrice;
 }
 

@@ -33,12 +33,15 @@ web3.eth.subscribe('logs', {
 }, async function (error, result) {
   if (!error) {
     // wait for 3s for other node to have tx info.
+    let swap;
     setTimeout(async function () {
-      // get the transaction
-      let tx = await web3.eth.getTransactionReceipt(result.transactionHash);
-      let swap;
       for (let i = 0; i < 5; i++) { // try 5 times
         try {
+          // get the transaction
+          let tx = await web3.eth.getTransactionReceipt(result.transactionHash);
+          if (tx === undefined) {
+            console.log(result.transactionHash);
+          }
           swap = await Parser.parseSwapTx(tx, endpoints); // parse the transaction
           break; // Break the loop if swap is parsed.
         } catch (e) { // Try again.
@@ -46,14 +49,12 @@ web3.eth.subscribe('logs', {
       }
 
       if (swap === 0) {
-        console.log(tx.transactionHash, swap);
+        console.log(result.transactionHash, swap);
       } else if (swap === 1) {
         // dup
       } else {
-        console.log(swap);
         await Swap.add(swap);
       }
-      let end = new Date();
     }, 3000);
   } else {
     console.log(error);

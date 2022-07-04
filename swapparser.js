@@ -64,17 +64,21 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
     pair: null,
   };
 
+  async function extractTokenInfo (log) {
+    let contract = new Contract(require('./abi/erc20.json'), log.address);
+    let name = await contract.methods.name().call();
+    let decimal = await contract.methods.decimals().call();
+    let symbol = await contract.methods.symbol().call();
+    return { symbol, name, decimal };
+  }
+
   for (const log of tx.logs) {
     // Transfer log event parse
     if (log.topics[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
       // transfer log
       let tokenInfo = tokenInfoMap[log.address];
       if (tokenInfo === undefined) {
-        let contract = new Contract(require('./abi/erc20.json'), log.address);
-        let name = await contract.methods.name().call();
-        let decimal = await contract.methods.decimals().call();
-        let symbol = await contract.methods.symbol().call();
-        tokenInfo = { symbol, name, decimal };
+        tokenInfo = await extractTokenInfo(log);
         tokenInfoMap[log.address] = tokenInfo;
       }
       let amount = (web3.eth.abi.decodeParameters(['uint256'], log.data))[0];
@@ -108,6 +112,10 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
         }
       }
     }
+  }
+
+  if (swap.tokenIn === undefined || swap.tokenOut === undefined) {
+    return 0;
   }
 
   // Use USD value
