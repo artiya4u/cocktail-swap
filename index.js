@@ -56,7 +56,7 @@ web3.eth.subscribe('logs', {
         console.log(swap);
         await Swap.add(swap);
       }
-    }, 30000);
+    }, 3000);
   } else {
     console.log(error);
   }

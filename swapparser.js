@@ -115,7 +115,7 @@ async function parseSwapTxByEndpoint (tx, endpoint) {
     let tokenAmount = swap.amountIn;
     let tokenPrice = await price.price(tokenToGetPrice, swap.blockNumber, swap.router);
     if (tokenPrice === null) {
-      tokenToGetPrice = swap.tokenOutDecimal;
+      tokenToGetPrice = swap.tokenOut;
       tokenToGetPriceDecimal = swap.tokenOutDecimal;
       tokenAmount = swap.amountOut;
       tokenPrice = await price.price(tokenToGetPrice, swap.blockNumber, swap.router);
