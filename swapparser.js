@@ -13,50 +13,33 @@ const usdTokens = [
 const swapparser = {};
 const processed = {};
 
-const providerSelector = async (endpoints, blockNumber) => {
-  let selectedProvider = null;
+swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
+  let swap;
+  let ran = 0;
   for (let i = 0; i < endpoints.length; i++) {
-    let ran = Math.floor(Math.random() * (endpoints.length - 1));
-    let endpoint = endpoints[ran];
-    let web3 = new Web3(endpoint);
-    let b = null;
     try {
-      await web3.eth.getBlock(blockNumber)
-        .then((block) => {
-          selectedProvider = web3;
-          b = block;
-        })
-        .catch(() => {
-          console.log(`Provider ${endpoint} not available`);
-        });
+      ran = Math.floor(Math.random() * (endpoints.length - 1)); // Random endpoint to prevent request limit.
+      let endpoint = endpoints[ran];
+      swap = await parseSwapTxByEndpoint(tx, endpoint);
+      break;
     } catch (e) {
-      console.log(`Provider ${endpoint} not available`);
-    }
-
-    if (b) {
-      return { selectedProvider, timestamp: b.timestamp, endpoint };
     }
   }
-  return false;
+  return swap;
 };
 
-swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
+async function parseSwapTxByEndpoint (tx, endpoint) {
   if (processed[tx.transactionHash] !== undefined) {
     return 1;
   }
   processed[tx.transactionHash] = true;
-  let p = await providerSelector(endpoints, tx.blockNumber);
-  let web3 = null;
-  if (p) {
-    web3 = p.selectedProvider;
-    Contract.setProvider(p.endpoint);
-  } else {
-    return 0;
-  }
+
+  let web3 = new Web3(endpoint);
+  Contract.setProvider(endpoint);
 
   const swap = {
     valueUSD: null,
-    swapAt: new Date(p.timestamp * 1000),
+    swapAt: new Date(),
     txHash: tx.transactionHash,
     blockNumber: tx.blockNumber,
     swapper: tx.from,
@@ -149,6 +132,6 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
   //   return 0;
   // }
   return swap;
-};
+}
 
 module.exports = swapparser;
