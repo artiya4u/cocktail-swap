@@ -22,8 +22,8 @@ let endpoints = [
 endpoints = endpointsGetBlock.concat(endpoints);
 const wrapBNBAddress = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 const usdTokens = [
-  '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', // BUSD
   '0x55d398326f99059fF775485246999027B3197955', // USDT
+  '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', // BUSD
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
 ];
 
@@ -84,20 +84,22 @@ async function priceByEndpoint (token, blockNumber, router, endpoint) {
   } else {
     let pairAddress = pairs[token];
     let isUSDPair = false;
+    let pairTo = wrapBNBAddress;
     if (pairAddress === undefined) {
       let routerContract = new Contract(require('../abi/router.json'), router);
       let factoryAddress = await routerContract.methods.factory().call();
       let factoryContract = new Contract(require('../abi/factory.json'), factoryAddress);
-      pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
-      if (pairAddress === '0x0000000000000000000000000000000000000000') {
-        // Try usd pairs
-        for (const usdToken of usdTokens) {
-          pairAddress = await factoryContract.methods.getPair(token, usdToken).call();
-          if (pairAddress !== '0x0000000000000000000000000000000000000000') {
-            isUSDPair = true;
-            break;
-          }
+      // Try usd pairs
+      for (const usdToken of usdTokens) {
+        pairAddress = await factoryContract.methods.getPair(token, usdToken).call();
+        if (pairAddress !== '0x0000000000000000000000000000000000000000') {
+          isUSDPair = true;
+          pairTo = usdToken;
+          break;
         }
+      }
+      if (!isUSDPair) { // Try Token/BNB pair
+        pairAddress = await factoryContract.methods.getPair(token, wrapBNBAddress).call();
       }
     }
     if (pairAddress !== '0x0000000000000000000000000000000000000000') {
@@ -111,7 +113,7 @@ async function priceByEndpoint (token, blockNumber, router, endpoint) {
       }
       let priceTOKEN = reserves._reserve1 / reserves._reserve0;
       let token0 = await pairTOKEN.methods.token0().call();
-      if (token0.toLowerCase() === wrapBNBAddress.toLowerCase()) {
+      if (token0.toLowerCase() === pairTo.toLowerCase()) {
         priceTOKEN = reserves._reserve0 / reserves._reserve1;
       }
       if (isUSDPair) {
