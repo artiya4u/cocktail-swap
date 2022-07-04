@@ -4,7 +4,7 @@ require('chai')
   .should();
 
 let Web3 = require('web3');
-const nodeURL = 'wss://bsc-mainnet.nodereal.io/ws/v1/ab63ba11285c4d998f1c8da1a79f1c8f';
+const nodeURL = 'https://bsc.getblock.io/mainnet/?api_key=9826cf91-1e59-4f05-8687-3f66d9d14c1c';
 const web3 = new Web3(nodeURL);
 
 let endpoints = [

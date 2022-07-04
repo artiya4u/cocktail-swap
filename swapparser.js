@@ -113,12 +113,12 @@ async function parseSwapTxByEndpoint (tx, endpoint) {
     let tokenToGetPrice = swap.tokenIn;
     let tokenToGetPriceDecimal = swap.tokenInDecimal;
     let tokenAmount = swap.amountIn;
-    let tokenPrice = await price.price(tokenToGetPrice, swap.blockNumber, swap.router);
+    let tokenPrice = await price.price(tokenToGetPrice, 0, swap.router);
     if (tokenPrice === null) {
       tokenToGetPrice = swap.tokenOut;
       tokenToGetPriceDecimal = swap.tokenOutDecimal;
       tokenAmount = swap.amountOut;
-      tokenPrice = await price.price(tokenToGetPrice, swap.blockNumber, swap.router);
+      tokenPrice = await price.price(tokenToGetPrice, 0, swap.router);
     }
     const amountRounded = tokenAmount / Math.pow(10, tokenToGetPriceDecimal);
     swap.valueUSD = amountRounded * tokenPrice / Math.pow(10, 18 - tokenToGetPriceDecimal);
