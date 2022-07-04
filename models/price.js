@@ -30,7 +30,6 @@ const usdTokens = [
 const pairs = {};
 const price = {};
 price.price = async function price (token, blockNumber, router) {
-  let start = new Date();
   let tokenPrice = null;
   let ran = 0;
   for (let i = 0; i < endpoints.length; i++) {
@@ -48,8 +47,6 @@ price.price = async function price (token, blockNumber, router) {
     tokenPrice = null;
   }
 
-  let end = new Date();
-  // console.log(`Token ${token} Router ${router} Used ${end - start}ms ${tokenPrice}`);
   return tokenPrice;
 };
 
