@@ -26,7 +26,7 @@ let endpoints = [
 describe('Parser ', function () {
   this.timeout(300000);
   it('it should able to parse a real transaction', async function () {
-    const txHash = '0x0e06a57fc898991f8bab74396f0c460352595ee3a2e4289f912de546eec50ba2';
+    const txHash = '0x084f8a02d16a596c54014b625ce4049c4f638fa34912f0e87577cfeb9e96ea0e';
     let tx = await web3.eth.getTransactionReceipt(txHash);
     let swap = await Parser.parseSwapTx(tx, endpoints); // parse the transaction
     console.log(swap);
