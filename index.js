@@ -40,9 +40,12 @@ web3.eth.subscribe('logs', {
           // get the transaction
           let tx = await web3.eth.getTransactionReceipt(result.transactionHash);
           if (tx === undefined) {
-            console.log(result.transactionHash);
+            continue; // Try more...
           }
           swap = await Parser.parseSwapTx(tx, endpoints); // parse the transaction
+          if (swap.valueUSD === 0) {
+            continue; // Try more...
+          }
           break; // Break the loop if swap is parsed.
         } catch (e) { // Try again.
         }

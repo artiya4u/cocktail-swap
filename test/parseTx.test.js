@@ -4,7 +4,7 @@ require('chai')
   .should();
 
 let Web3 = require('web3');
-const nodeURL = 'https://bsc.getblock.io/mainnet/?api_key=9826cf91-1e59-4f05-8687-3f66d9d14c1c';
+const nodeURL = 'https://bsc-dataseed4.binance.org/';
 const web3 = new Web3(nodeURL);
 
 let endpoints = [

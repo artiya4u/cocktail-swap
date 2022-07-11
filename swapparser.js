@@ -23,6 +23,7 @@ swapparser.parseSwapTx = async function parseSwapTx (tx, endpoints) {
       swap = await parseSwapTxByEndpoint(tx, endpoint);
       break;
     } catch (e) {
+      console.log(e);
     }
   }
   return swap;
