@@ -55,6 +55,7 @@ async function run () {
               // console.log(swap);
               await Swap.add(swap);
             }
+            break;
           }
         }
       }
